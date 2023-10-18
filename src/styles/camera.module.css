@@ -1,0 +1,79 @@
+/* div {
+    border: 1px solid red;
+} */
+
+*{
+    box-sizing: border-box;
+}
+
+.scoreContainer{
+    display: flex;
+    width: 320px;
+    height: 100px;
+    background-color: #08133F;
+    border-radius: 15px;
+    margin-top : 20px;
+    margin-left: 20px;
+
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+.title{
+    flex-basis: 200px;
+    border-radius: 15px;
+}
+
+.teams{
+    display: flex;
+    height: 50%;
+    align-items: center;
+}
+
+.bowlingTeam{
+    font-size: 24px;
+}
+
+.battingTeam{
+    font-size: 36px;
+    font-weight: 700;
+    color:#05FFFC;
+    padding-left: 4px;
+}
+
+.target{
+    display: flex;
+    height: 50%;
+    align-items: center;
+    
+    font-size: 24px;   
+}
+
+.score{
+    background-color: #152D8A;
+    border-radius: 15px;
+    flex-basis: 120px
+}
+
+.runs{
+    display: flex;
+    height: 50%;
+    align-items: center;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.overs{
+    display: flex;
+    height: 50%;
+    align-items: center;
+    
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.bowlingTeam, .target, .runs, .overs{
+    padding-left: 24px;
+}
