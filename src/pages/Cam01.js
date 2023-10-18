@@ -1,52 +1,29 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import style from "../styles/camera.module.css";
-
-//https://v1.slashapi.com/cabeteam/pgsql/QtpENDhOJS/fitsixes/1
+import style from "../styles/camera1.module.css";
 
 function Cam01() {
-  const [data, setData] = useState(null);
+  const testData = { pitch: 1, teamA: "99x", teamB: "Cambio", runs: 184, wickets: 3, target: 385, overs: 9.2 };
+  const [data, setData] = useState(testData);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(
-        'https://v1.slashapi.com/cabeteam/pgsql/QtpENDhOJS/fitsixes/1'
-      );
-      const newData = await response.json();
-      newData.data.teamb = newData.data.teamb.substring(0, 3);
-      setData(newData.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    // Fetch data initially
-    fetchData();
-    console.log(data);
-
-    // Set up an interval to fetch data every 5 seconds
-    const intervalId = setInterval(fetchData, 10000);
-
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, []);
 
   return (
     <>
-      <div className={style.scoreContainer}>
-        <div className={style.title}>
-          <div className={style.teams}>
-            <div className={style.bowlingTeam}>99x v</div>
-            <div className={style.battingTeam}>CAM</div>
+      {data &&
+        <div className={style.scoreContainer}>
+          <div className={style.title}>
+            <div className={style.teams}>
+              <div className={style.bowlingTeam}>{data.teamA} v</div>
+              <div className={style.battingTeam}>CAM</div>
+            </div>
+            <div className={style.target}>Target: {data.target}</div>
           </div>
-          <div className={style.target}>Target: 56</div>
+          <div div className={style.score}>
+            <div className={style.runs}>{data.runs}-{data.wickets}</div>
+            <div className={style.overs}>{data.overs}</div>
+          </div>
         </div>
-        <div div className={style.score}>
-          <div className={style.runs}>17-0</div>
-          <div className={style.overs}>1.4</div>
-        </div>
-      </div>
+      }
     </>
 
   )
