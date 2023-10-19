@@ -1,46 +1,53 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import style from "../styles/camera2.module.css";
+import axios from 'axios';
 
 function Cam02({ matchData }) {
-  const [data, setData] = useState(null);
-
+  const [match, setMatch] = useState();
   useEffect(() => {
-
-    //crop team names if too long
-    if (matchData) {
-      if (matchData.teamA.length > 7) {
-        matchData.teamA = (matchData.teamA.slice(0, 7))
-      }
-      if (matchData.teamB.length > 8) {
-        matchData.teamB = (matchData.teamB.slice(0, 8))
-      }
-    }
-    
-    setData(matchData);
-
+    getOngoingMatch();
   }, [matchData]);
+
+  const getOngoingMatch = () => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_API_DEV_BASE_URL ||
+          `https://mqempuran2.execute-api.ap-south-1.amazonaws.com/prod/v1`
+        }/matches/ongoing`
+      )
+      .then((res) => {
+        console.log(res);
+        setMatch(
+          res.data.data.matches.matches.find(
+            (obj) => obj.id === matchData.match_id
+          )
+        );
+      })
+      .catch((err) => {});
+  };
 
   return (
     <>
-      {data &&
+      {true &&
         <>
           <div className={style.scoreContainer}>
 
-            <div className={style.pitch}>{data.pitch}</div>
+            <div className={style.pitch}>P1</div>
 
             <div className={style.row1}>
 
               <div className={style.col1}>
                 <span className={style.bowlingTeam}>
-                  {data.teamA} v
+                  {match?.team1} v
                 </span>
                 <span className={style.battingTeam}>
-                  {data.teamB}
+                  {match?.team2}
                 </span>
               </div>
               <div div className={style.col2}>
-                <div className={style.score}> {data.runs}-{data.wickets} </div>
+                <div className={style.score}> {match?.scorecard.team1.marks || 0} - {match?.scorecard.team1.wickets || 0} </div>
               </div>
 
             </div>
@@ -48,10 +55,10 @@ function Cam02({ matchData }) {
             <div className={style.row2}>
 
               <div className={style.col1}>
-                <div className={style.secondary}>Target - {data.target}</div>
+                <div className={style.secondary}>Target - 100 </div>
               </div>
               <div className={style.col2}>
-                <div className={style.secondary}> Overs - {data.overs}</div>
+                <div className={style.secondary}> ({match?.overs}.0) </div>
 
               </div>
 
