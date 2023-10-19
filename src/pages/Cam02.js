@@ -2,18 +2,32 @@ import React from "react";
 import { useState, useEffect } from "react";
 import style from "../styles/camera2.module.css";
 
-function Cam02() {
-  const testData = { pitch: 1, teamA: "99x", teamB: "Cambio", runs: 184, wickets: 3, target: 385, overs: 9.2 };
-  const [data, setData] = useState(testData);
+function Cam02({ matchData }) {
+  const [data, setData] = useState(null);
 
+  useEffect(() => {
+
+    //crop team names if too long
+    if (matchData) {
+      if (matchData.teamA.length > 7) {
+        matchData.teamA = (matchData.teamA.slice(0, 7))
+      }
+      if (matchData.teamB.length > 8) {
+        matchData.teamB = (matchData.teamB.slice(0, 8))
+      }
+    }
+    
+    setData(matchData);
+
+  }, [matchData]);
 
   return (
     <>
       {data &&
-        <div className={style.scoreBackgrond}>
+        <>
           <div className={style.scoreContainer}>
 
-            <div className={style.pitch}>P1</div>
+            <div className={style.pitch}>{data.pitch}</div>
 
             <div className={style.row1}>
 
@@ -42,11 +56,8 @@ function Cam02() {
               </div>
 
             </div>
-
-            
           </div>
-        </div>
-
+        </>
       }
     </>
 

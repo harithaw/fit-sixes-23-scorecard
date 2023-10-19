@@ -1,9 +1,9 @@
-import Cam02 from "./pages/Cam02.js";
+import Canvas01 from "./pages/Canvas01";
 
 function App() {
   return (
     <>
-      <Cam02 />
+      <Canvas01 />
     </>
   );
 }

@@ -12,9 +12,10 @@ body{
 
 .scoreBackgrond{
     background-color: #080A31;
-    opacity: .99;
+    opacity: .97;
     border-radius: 10px;
 
+    display: flex;
     position: fixed;
     height: 155px;
     width: 1890px;
@@ -22,13 +23,13 @@ body{
 }
 
 .scoreContainer{
-    width: 350px;
+    width: 400px;
     height: 100px;
     border: 2px solid white;
     border-radius: 10px;
     
-    margin-top: 25px;
-    margin-left: 35px;
+    margin-top: 24px;
+    margin-left: 57px;
 
     color: white;
     font-family: 'Montserrat', sans-serif;
@@ -51,7 +52,7 @@ body{
 }
 
 .col1{
-    flex-basis: 50%;
+    flex-basis: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,12 +84,12 @@ body{
 
 /* styling changes */
 .bowlingTeam{
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
 }
 
 .battingTeam{
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
 
     padding-left: 4px;
@@ -101,10 +102,10 @@ body{
 
     color: black;
     font-weight: 700;
-    font-size: 28px;
+    font-size: 30px;
 }
 
 .secondary{
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
 }
