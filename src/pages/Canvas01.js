@@ -11,22 +11,21 @@ function Canvas01() {
     const [liveScore, setLiveScore] = useState(null);
 
     useEffect(() => {
-        const WEB_SOCKET_URL = 'wss://socketsbay.com/wss/v2/5/518d5516a7d3bbb045f17787384cc6b8/';
+        const WEB_SOCKET_URL = 'wss://bzkg9tjte7.execute-api.ap-south-1.amazonaws.com/production';
         wsRef.current = new WebSocket(WEB_SOCKET_URL);
 
         wsRef.current.onopen = () => {
-            const data = { action: 'sendMessage', message: 'hello server' };
+            const data = { action: 'sendMessage', message: 'hello server2' };
             wsRef.current.send(JSON.stringify(data));
-
             console.log("WebSocket connected")
         };
 
         wsRef.current.onmessage = (event) => {
+            console.log("socketData", event);
             const data = JSON.parse(event.data);
-            console.log("socketData",data)
-            if (data.score.length > 0) {
+            if (data.score && data.score.length > 0) {
                 setLiveScore(data.score);
-                console.log("near set",liveScore)
+                console.log("near set", data.score);
             }
         };
 
@@ -53,10 +52,10 @@ function Canvas01() {
         <>
             {liveScore &&
                 <div className={style.scoreBackgrond}>
-                {liveScore?.map((match, index) => {
-                    return <Cam02 matchData={match} key={index}/>
-                })}
-            </div>
+                    {liveScore?.map((match, index) => {
+                        return <Cam02 matchData={match} key={index} />
+                    })}
+                </div>
             }
 
             {/* {liveScore &&
