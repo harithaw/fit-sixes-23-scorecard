@@ -3,43 +3,37 @@ import { useState, useEffect } from "react";
 import style from "../styles/camera2.module.css";
 import axios from 'axios';
 
+function shortenName(name) {
+  const nameParts = name.split(' ');
+
+  let shortenedName = '';
+
+  for (let i = 0; i < nameParts.length; i++) {
+    shortenedName += nameParts[i].charAt(0);
+  }
+
+  return shortenedName;
+}
+
 function Cam02({ matchData }) {
 
   const [match, setMatch] = useState(null);
-
-  const testMatch = {
-    team1: "99X",
-    team2: "Cambio",
-    scorecard: {
-      team1: {
-        marks: 50,
-        wickets: 3,
-        overs: 1,
-        balls: 3
-      },
-      team2: {
-        marks: 35,
-        wickets: 4,
-        overs: 2,
-        balls: 0
-      }
-    },
-    overs: 5,
-    pitch_no: 1
-  }
+  console.log("HELLO", matchData);
 
   useEffect(() => {
     async function getOngoingMatch() {
       await axios
-      .get(
-        `https://v1.slashapi.com/sd/pgsql/TsoVbS8v5m/match_data`
-      )
-      .then((res) => {
-        const data = (res.data.data.find((obj) => obj.id === matchData.match_id));
-        const json = JSON.parse(data.match_info)
-        setMatch(json);
-      })
-      .catch((err) => { });
+        .get(
+          `https://j1kydf6tp3.execute-api.ap-south-1.amazonaws.com/dev/v1/matches/ongoing`
+        )
+        .then((res) => {
+          setMatch(
+            res.data.data.matches.matches.find(
+              (obj) => obj.id === matchData.match_id
+            )
+          )
+        })
+        .catch((err) => { });
     }
 
     getOngoingMatch()
@@ -53,7 +47,7 @@ function Cam02({ matchData }) {
     console.log("match state", match)
   }, [match])
 
-  
+
 
   // const [data, setData] = useState(null);
 
@@ -85,10 +79,10 @@ function Cam02({ matchData }) {
 
               <div className={style.col1}>
                 <span className={style.bowlingTeam}>
-                  {match?.team1} v
+                  {shortenName(match?.team1)} v
                 </span>
                 <span className={style.battingTeam}>
-                  {match?.team2}
+                  {shortenName(match?.team2)}
                 </span>
               </div>
               <div div className={style.col2}>
@@ -103,12 +97,12 @@ function Cam02({ matchData }) {
                 <div className={style.secondary}>Target - XX</div>
               </div>
               <div className={style.col2}>
-                <div className={style.secondary}> Overs - {match && match?.overs}.0</div>
+                <div className={style.secondary}> Overs - {match && match?.scorecard.team1.overs}.0</div>
               </div>
             </div>
           </div>
         </>
-      : undefined}
+        : undefined}
     </>
 
   )
