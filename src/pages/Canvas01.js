@@ -1,37 +1,67 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useRef } from 'react';
 
 import Cam02 from "./Cam02.js"
 import style from "../styles/camera2.module.css";
 
-
 function Canvas01() {
-    const testData1 = { pitch: "P1", teamA: "99x", teamB: "WS02", runs: 184, wickets: 3, target: 385, overs: 9.2 };
-    const testData2 = { pitch: "P2", teamA: "WSO2", teamB: "Virtusaa", runs: 54, wickets: 0, target: 64, overs: 9.2 };
-    const testData3 = { pitch: "P3", teamA: "Virtusa", teamB: "Brocoders", runs: 54, wickets: 0, target: 64, overs: 9.2 };
-    const testData4 = { pitch: "P4", teamA: "Innowise", teamB: "Virtusaa", runs: 54, wickets: 0, target: 64, overs: 9.2 };
+    const wsRef = useRef(null);
 
-    const [match01, setMatch01] = useState(null);
-    const [match02, setMatch02] = useState(null);
-    const [match03, setMatch03] = useState(null);
-    const [match04, setMatch04] = useState(null);
+    const [liveScore, setLiveScore] = useState(null);
 
     useEffect(() => {
-        setMatch01(testData1);
-        setMatch02(testData2);
-        setMatch03(testData3);
-        setMatch04(testData4);
+        const WEB_SOCKET_URL = 'wss://socketsbay.com/wss/v2/5/518d5516a7d3bbb045f17787384cc6b8/';
+        wsRef.current = new WebSocket(WEB_SOCKET_URL);
 
+        wsRef.current.onopen = () => {
+            const data = { action: 'sendMessage', message: 'hello server' };
+            wsRef.current.send(JSON.stringify(data));
+
+            console.log("WebSocket connected")
+        };
+
+        wsRef.current.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("socketData",data)
+            if (data.score.length > 0) {
+                setLiveScore(data.score);
+                console.log("near set",liveScore)
+            }
+        };
+
+        wsRef.current.onclose = (event) => {
+            console.log('WebSocket connection closed:', event);
+        };
+
+        wsRef.current.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
     }, []);
 
-    return(
+    useEffect(() => {
+        console.log("liveScore state", liveScore);
+    }, [liveScore]);
+
+    return (
         <>
-            <div className={style.scoreBackgrond}>
-                <Cam02 matchData={match01}/>
-                <Cam02 matchData={match02}/>
-                <Cam02 matchData={match03}/>
-                <Cam02 matchData={match04}/>
+            {liveScore &&
+                <div className={style.scoreBackgrond}>
+                {liveScore?.map((match, index) => {
+                    return <Cam02 matchData={match} key={index}/>
+                })}
             </div>
+            }
+
+            {/* {liveScore &&
+                 <Cam02 matchData={liveScore[0]} />
+            } */}
         </>
     )
 
