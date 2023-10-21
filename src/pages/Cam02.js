@@ -2,10 +2,53 @@ import React from "react";
 import { useState, useEffect } from "react";
 import style from "../styles/camera2.module.css";
 import axios from 'axios';
+import { useRef } from 'react';
 
 function Cam02({ matchData }) {
+  const wsRef = useRef(null);
 
   const [match, setMatch] = useState(null);
+
+    const [liveScore, setLiveScore] = useState(null);
+
+    useEffect(() => {
+        const WEB_SOCKET_URL = 'wss://socketsbay.com/wss/v2/5/518d5516a7d3bbb045f17787384cc6b8/';
+        wsRef.current = new WebSocket(WEB_SOCKET_URL);
+
+        wsRef.current.onopen = () => {
+            const data = { action: 'sendMessage', message: 'hello server' };
+            wsRef.current.send(JSON.stringify(data));
+
+            console.log("WebSocket connected")
+        };
+
+        wsRef.current.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("socketData",data)
+            if (data) {
+                setMatch(data);
+                console.log("near set",liveScore)
+            }
+        };
+
+        wsRef.current.onclose = (event) => {
+            console.log('WebSocket connection closed:', event);
+        };
+
+        wsRef.current.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log("liveScore state", liveScore);
+    }, [liveScore]);
 
   const testMatch = {
     team1: "99X",
@@ -27,27 +70,6 @@ function Cam02({ matchData }) {
     overs: 5,
     pitch_no: 1
   }
-
-  useEffect(() => {
-    async function getOngoingMatch() {
-      await axios
-      .get(
-        `https://v1.slashapi.com/sd/pgsql/TsoVbS8v5m/match_data`
-      )
-      .then((res) => {
-        const data = (res.data.data.find((obj) => obj.id === matchData.match_id));
-        const json = JSON.parse(data.match_info)
-        setMatch(json);
-      })
-      .catch((err) => { });
-    }
-
-    getOngoingMatch()
-
-    // setMatch(testMatch)
-  }, [matchData,])
-
-
 
   useEffect(() => {
     console.log("match state", match)
@@ -79,7 +101,7 @@ function Cam02({ matchData }) {
         <>
           <div className={style.scoreContainer}>
 
-            <div className={style.pitch}>P{match && match?.pitch_no}</div>
+            {/* <div className={style.pitch}>P{match && match?.pitch_no}</div> */}
 
             <div className={style.row1}>
 
@@ -100,10 +122,10 @@ function Cam02({ matchData }) {
             <div className={style.row2}>
 
               <div className={style.col1}>
-                <div className={style.secondary}>Target - XX</div>
+                <div className={style.secondary}>{match.scorecard.team2.marks !==0 ? <div> Target : {match?.scorecard.team2.marks}</div> : <div>First Innings</div>}</div>
               </div>
               <div className={style.col2}>
-                <div className={style.secondary}> Overs - {match && match?.overs}.0</div>
+                <div className={style.secondary}> Overs - {match && match?.overs}</div>
               </div>
             </div>
           </div>

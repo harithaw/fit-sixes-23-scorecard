@@ -12,13 +12,13 @@ body{
 
 .scoreBackgrond{
     background-color: #080A31;
-    opacity: .97;
+    opacity: .90;
     border-radius: 10px;
 
     display: flex;
     position: fixed;
     height: 155px;
-    width: 1890px;
+    width: 512px;
     left: 15px;
 }
 
